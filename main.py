@@ -4,8 +4,8 @@ import seaborn
 from factor_analyzer import calculate_kmo, FactorAnalyzer
 from sklearn.preprocessing import StandardScaler
 
-df_angajati = pd.read_csv("CAEN2_2021_NSAL.csv", index_col=0)
-df_popLoc = pd.read_csv("PopulatieLocalitati.csv", index_col=0)
+df_angajati = pd.read_csv("data_in/CAEN2_2021_NSAL.csv", index_col=0)
+df_popLoc = pd.read_csv("data_in/PopulatieLocalitati.csv", index_col=0)
 coduri = list(df_angajati)[0:]
 
 #Cerinta1
@@ -15,7 +15,7 @@ df_cerinta1 = pd.DataFrame(
     data=cerinta1.round(2),
     columns=df_angajati.columns,
     index=df_angajati.index
-).to_csv("Cerinta1.csv")
+).to_csv("data_out/Cerinta1.csv")
 
 #Cerinta2
 def fc(t):
@@ -28,7 +28,7 @@ def fc(t):
 df_merged = df_angajati.merge(df_popLoc, left_index=True, right_index=True)
 df_merged.index.name = "Siruta"
 df_grouped = df_merged.groupby(by="Judet").apply(func=fc, include_groups=False)
-df_grouped.round(2).to_csv("Cerinta2.csv")
+df_grouped.round(2).to_csv("data_out/Cerinta2.csv")
 
 #B
 scaler = StandardScaler()
@@ -57,7 +57,7 @@ matrix_scores = pd.DataFrame(
     index=df_scaled.index,
     columns=[f"F{i+1}" for i in range(n_factors)]
 )
-matrix_scores.to_csv("Matrix_scores.csv")
+matrix_scores.to_csv("data_out/Matrix_scores.csv")
 
 #Grafic primii 2 factori
 seaborn.scatterplot(data=matrix_scores, x="F1", y="F2")
@@ -71,7 +71,7 @@ cor_matrix = pd.DataFrame(
     columns=[f"Factor{i+1}" for i in range(n_factors)]
 )
 cor_matrix.index.name = "Index"
-cor_matrix.to_csv("Correlation.csv")
+cor_matrix.to_csv("data_out/Correlation.csv")
 
 #Varianța factorilor comuni
 table_variance = pd.DataFrame({
@@ -80,4 +80,4 @@ table_variance = pd.DataFrame({
     "CumProc": fa.get_factor_variance()[2]
 })
 table_variance.index.name = "Factor"
-table_variance.to_csv("Variance.csv")
+table_variance.to_csv("data_out/Variance.csv")
